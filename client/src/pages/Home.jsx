@@ -1,12 +1,13 @@
+import HeroSection from "../components/HeroSection";
 
 const Home = () => {
   return (
-    <>
-    
-     <div> Home</div>
-    </>
-   
-  )
-}
+    <div className="mt-36">
+    <HeroSection/>
 
-export default Home
+    </div>
+   
+  );
+};
+
+export default Home;
