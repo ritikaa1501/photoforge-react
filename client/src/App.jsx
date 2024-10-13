@@ -17,9 +17,9 @@ export default function App() {
             <Route path="/signup" element={<Signup/>}/>
             <Route path="/seller/profile" element={<SellerDashboard/>}/>
             <Route path="/buyer/profile" element={<BuyerDashboard/>}/>
-
           </Routes>
-      </BrowserRouter>
+          {/*Add your Footer here*/}
+          </BrowserRouter>
 
     </>
   )
