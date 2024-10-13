@@ -1,12 +1,13 @@
 import HeroSection from "../components/HeroSection";
+import PhotoGalary from "../components/PhotoGalary";
 
 const Home = () => {
   return (
     <div className="mt-36">
-    <HeroSection/>
+      <HeroSection />
+      <PhotoGalary/>
 
     </div>
-   
   );
 };
 
