@@ -91,7 +91,7 @@ const PhotoGalary = () => {
            icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
            />
 
-          <ImageCard title="Cppuccino" 
+          <ImageCard title="Cappuccino" 
            author="Maria" 
            img="https://i3.wp.com/lamag.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:eco%2Cw_1200/MTk3NTU2MzQxMTI4MjQyODgw/jonas-jacobsson-338014.jpg?ssl=1"
            price={30}
