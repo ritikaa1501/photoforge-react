@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import SellerDashboard from "../pages/SellerDashboard";
 import BuyerDashboard from "../pages/BuyerDashboard";
+import About from "../pages/About";
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { Toaster } from "react-hot-toast";
@@ -32,6 +33,7 @@ const GsapTransition = () => {
       <Toaster />
       <Routes location={location}>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/seller/profile" element={<SellerDashboard />} />
