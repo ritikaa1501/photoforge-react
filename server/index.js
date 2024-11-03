@@ -5,19 +5,19 @@ const express = require("express");
 const dotenv = require("dotenv");
 const { readdirSync } = require("fs");
 const { connectDb } = require("./connection");
-
-// import the route here
-// const authRoute = require("./routes/authRoutes");
+const cors = require("cors");
 
 // binding this env
 dotenv.config();
-// Express ko call karna padega ek variable me
+// Express call 
 const app = express();
-// port define karna hoga - Port hota hai darwaja
+// port define 
 const port = process.env.PORT || 5000;
 
 connectDb()
 // Making routes
+app.use(cors());
+app.use(express.json());
 app.get("/", (req, res) => {
   res.send("<center><h1>Server Running Dudes...</h1></center>");
 });
@@ -29,13 +29,6 @@ app.get("/", (req, res) => {
 readdirSync("./routes").map((route) =>
   app.use("/api", require(`./routes/${route}`))
 );
-// console.log(readdirSync("./routes"))
-
-// types of requests
-// 1. GET -> To get the data from the server
-// 2. POST -> To post the data to the server
-// 3. PUT -> To update the data on the server
-// 4. DELETE -> To dete the data form the server
 
 // Server ko listen karna hoga
 app.listen(port, () => {
