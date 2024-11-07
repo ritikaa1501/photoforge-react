@@ -1,13 +1,14 @@
 import React from 'react';
 
 export default function App() {
+  
   return (
-    <footer
-      className="bg-neutral-100 text-center text-neutral-600 dark:bg-gray-800 dark:text-neutral-200 lg:text-left">
+    <footer 
+      className={`bg-neutral-100 text-center text-neutral-600 dark:bg-gray-800 dark:text-neutral-200 lg:text-left`} > 
       <div
         className="flex items-center justify-center border-b-2 border-neutral-200 p-6 dark:border-neutral-500 lg:justify-between">
         <div className="mr-12 hidden lg:block">
-          <span>Get connected with us on social networks:</span>
+          <span>Get connected with us on social networks:</span> 
         </div>
         {/* <!-- Social network icons container --> */}
         <div className="flex justify-center">
@@ -243,7 +244,7 @@ export default function App() {
           href="https://tw-elements.com/"
         >website</a>
       </div>
-    </footer>
+       </footer>
   );
 } 
 

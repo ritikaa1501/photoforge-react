@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route,  Routes, useLocation } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
@@ -13,9 +13,7 @@ const GsapTransition = () => {
   const nodeRef = useRef(null);
   const location = useLocation();
   console.log("The location is : ", location);
-
-  //   Jab bhi location change hoga tab ye use effect run hoga, because ye useEffect hook ko ham depenedent banane wale hai locaiton ke upper
-
+ 
   //   When a page renders, useEffects runs first
   useEffect(() => {
     if (nodeRef.current) {

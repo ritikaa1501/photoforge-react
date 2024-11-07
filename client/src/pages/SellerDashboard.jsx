@@ -1,8 +1,12 @@
 import React from 'react'
+import DashboardSidebar from '../components/DashboardSidebar'
 
 const SellerDashboard = () => {
   return (
-    <div>SellerDashboard</div>
+    <div>
+      <DashboardSidebar/>
+      <div>{/* we will change the pages through switch case here */}</div>
+    </div>
   )
 }
 
