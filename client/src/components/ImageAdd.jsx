@@ -42,7 +42,7 @@ const ImageAdd = () => {
           title,
           price,
           image: secure_url,
-          public_id: public_id,
+          publicId: public_id,
           author,
         },
         {
@@ -60,6 +60,7 @@ const ImageAdd = () => {
         setProgress(0);
       }
     } catch (error) {
+      console.log(error);
       return toast.error(error.response.data.message);
     }
   };
