@@ -111,7 +111,7 @@ const ImageAdd = () => {
             id="title"
             required
             className="rounded-lg border outline-none px-3 py-1 mt-1"
-            placeholder="Beautiful Flower"
+            placeholder="Add image title"
           />
         </div>
         <div className="flex flex-col">
@@ -124,7 +124,7 @@ const ImageAdd = () => {
             id="price"
             required
             className="rounded-lg border outline-none px-3 py-1 mt-1"
-            placeholder="45"
+            placeholder="Add price"
           />
         </div>
         <button
