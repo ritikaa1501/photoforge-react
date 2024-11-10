@@ -1,8 +1,114 @@
 import { HiShoppingBag } from "react-icons/hi2";
 import { RiHeartAdd2Fill } from "react-icons/ri";
 import ImageCard from "./ImageCard";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
+import { setAllPosts } from "../../store/slices/postSlice";
 
 const PhotoGalary = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const posts = useSelector((state) => state.posts.allPosts);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  const getAllImages = async () => {
+    if (posts.length > 0) return;
+    const res = await axios.get(import.meta.env.VITE_API_URL + "/post/getAll");
+    const { data } = await res.data;
+    console.log(data);
+    dispatch(setAllPosts(data));
+  };
+
+  const purchaseImage = async (price, id, postUrl, author, title) => {
+    if (!isAuthenticated) {
+      toast.error("Please login to purchase asset");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        import.meta.env.VITE_API_URL + "/payment/generate",
+        {
+          price,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      const { data } = await res.data;
+      await handlePaymentVerify(data, id, postUrl, author, title, price);
+      // will use using a function here to handle the payment verification
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const handlePaymentVerify = async (
+    data,
+    id,
+    postUrl,
+    author,
+    title,
+    price
+  ) => {
+    const options = {
+      key: import.meta.env.RAZORPAY_KEY_ID,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Ritika",
+      order_id: data.id,
+      theme: {
+        color: "#5f63b8",
+      },
+      handler: async (response) => {
+        try {
+          const res = await axios.post(
+            import.meta.env.VITE_API_URL + "/payment/verify",
+            {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              postId: id,
+              postUrl,
+              author,
+              title,
+              price,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              },
+              withCredentials: true,
+            }
+          );
+          const data = await res.data;
+          toast.success(data.message);
+        } catch (error) {
+          toast.error(error.response.data.message);
+        }
+      },
+    };
+    const razorpayWindow = new window.Razorpay(options);
+    razorpayWindow.open();
+  };
+
+
+  useEffect(() => {
+    getAllImages();
+  }, []);
+
+    
+
+
   return (
     <div className="my-50 bg-#DD7D5D flex flex-col justify-center items-center">
         <h3 className="text-3xl font-semibold my-5">Photos</h3>
@@ -10,107 +116,30 @@ const PhotoGalary = () => {
         {/*All my photos will be listed inside this div*/}       
         <div div className="grid grid-cols-1 sm:grid-cols-4 gap-5 mb-20">
            {/* Image card  */}
-           <ImageCard title="Bougainville" 
-           author="Alia" 
-           img="https://images.pexels.com/photos/1034403/pexels-photo-1034403.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-           price={20}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-           <ImageCard title="The Beach" 
-           author="Jay" 
-           img="https://c4.wallpaperflare.com/wallpaper/37/62/515/nature-turquoise-sea-beach-wallpaper-thumb.jpg"
-           price={30}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-           <ImageCard title="Sunflowers" 
-           author="Sia" 
-           img="https://images.pexels.com/photos/3036366/pexels-photo-3036366.jpeg"
-           price={50}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-           <ImageCard title="View" 
-           author="Dia" 
-           img="https://images.pexels.com/photos/1719173/pexels-photo-1719173.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-           price={20}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-           <ImageCard title="The Castle" 
-           author="Rohan" 
-           img="https://w0.peakpx.com/wallpaper/511/729/HD-wallpaper-balmoral-castle-scotland-castle-aesthetic-castles-interior-beautiful-places.jpg"
-           price={20}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-           <ImageCard title="Tulips" 
-           author="Aren" 
-           img="https://pbs.twimg.com/media/GFmvuYRW4AA3qlY.jpg"
-           price={10}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-           <ImageCard title="The Landscape" 
-           author="derek" 
-           img="https://wallpaper.dog/large/20431158.jpg"
-           price={30}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-           
-          <ImageCard title="Winter landscape" 
-           author="Alen" 
-           img="https://images.unsplash.com/photo-1519216862816-eeaf9dbb90a1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNub3dmYWxsfGVufDB8fDB8fHww"
-           price={20}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-          <ImageCard title="Night Sky" 
-           author="Cole" 
-           img="https://i.pinimg.com/originals/7d/bc/55/7dbc55de3e1108f41e53bdd72642e6a8.jpg"
-           price={50}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-          <ImageCard title="Aesthetic Room Decor" 
-           author="Joe" 
-           img="https://i.pinimg.com/736x/c3/b8/2e/c3b82ec9fc527dc0d093f379f51fd43e.jpg"
-           price={20}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-          <ImageCard title="Cappuccino" 
-           author="Maria" 
-           img="https://i3.wp.com/lamag.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:eco%2Cw_1200/MTk3NTU2MzQxMTI4MjQyODgw/jonas-jacobsson-338014.jpg?ssl=1"
-           price={30}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-          <ImageCard title="Peri Peri Fries" 
-           author="Ritu" 
-           img="https://lh3.googleusercontent.com/p/AF1QipOT-jZauactQjBrsgiqv2A3TCucidR4Ogx1g1-_=s680-w680-h510"
-           price={40}
-           icon1={<HiShoppingBag className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>} 
-           icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
-           />
-
-          
+           {posts?.map(({ _id, title, image, price, author }) => {
+          return (
+            <ImageCard
+              key={_id}
+              id={_id}
+              title={title}
+              author={author}
+              img={image}
+              price={price}
+              icon1={<HiShoppingBag 
+                title="Cart"
+                onClick={() =>
+                  purchaseImage(price, _id, image, author, title)
+                }
+                className="text-3xl text-black cursor-pointer hover:scale-110 transition-all ease-linear duration-300"
+                 />
+                  } 
+              icon2={ <RiHeartAdd2Fill className="text-3xl text-red-600 cursor-pointer hover:scale-110 transition-all ease-linear duration-300"/>}
+              />
+            );
+          })}         
     </div>
     </div>
-  ) 
-}
+  ) ;
+};
 
-export default PhotoGalary
+export default PhotoGalary;
